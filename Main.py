@@ -14,7 +14,7 @@ colors = [(255,0,0), (0,255,0), (0,0,255), (255,128,0), (255,255,0), (0,204,204)
 
 #Overlapping colors cause color issues
 cubes = []
-cube = ManualCube(1, 1,1,[[500],[500],[300]], 100, (0,0,1))
+cube = ManualCube(0.5, 0.5,0.5,[[500],[500],[300]], 100, (0,0,-1))
 cubes.append(cube)
 
 while running:
@@ -23,13 +23,14 @@ while running:
     for cube in cubes:
         points = cube.transform_points()
             
-        for j,face in cube.visible_faces():
-            coords = [points[i] for i in face]
+        for face, color in zip(cube.visible_faces(), cube.quick_trace()):
+            print(face, color)
+
+            coords = [points[i] for i in face[1]]
             # print(coords, face)
-            pygame.draw.polygon(screen, colors[j], coords)
+            pygame.draw.polygon(screen, color, coords)
             for k in range(4):
                 pygame.draw.circle(screen, (255,0,0), coords[k], 10)
-        
         
     pygame.display.update()
 

@@ -1,6 +1,8 @@
 import random
 import numpy as np
 from typing import List, Tuple
+from QuickTrace import quick_trace, scales_values, assign_color
+import pygame
 
 class Cube:
     """
@@ -10,7 +12,7 @@ class Cube:
         """
         Initializes a Cube object.
 
-        Parameters:
+        Args:
         - theta_x (int): The rotation angle around the x-axis in degrees.
         - theta_y (int): The rotation angle around the y-axis in degrees.
         - theta_z (int): The rotation angle around the z-axis in degrees.
@@ -177,3 +179,35 @@ class Cube:
             List[Tuple[int, List[int]]]: The sorted list of visible faces.
         """
         return sorted(visible_faces, key=lambda face: min([self.cube_points[i][2] for i in face[1]]))
+
+    def quick_trace(self):
+        """
+        Traces the distance to the viewer for each point in the cube.
+
+        Args:
+            points (List[np.matrix]): The list of points to trace.
+            view_point (Tuple[int]): The viewpoint from which the cube is observed.
+
+        Returns:
+            None
+        """
+
+        min_val, max_val = 1e9,0
+        for face in self.faces:
+            points = [self.cube_points[i][2] for i in face]
+            min_val = min(min_val, min(points))
+            max_val = max(max_val, max(points))
+
+
+        faces = self.visible_faces()
+        mid_points = []
+
+        for face in faces:
+            points = [self.cube_points[i][2] for i in face[1]]
+            mid_point = np.mean(points)
+            mid_points.append(mid_point)
+
+        # print([assign_color(x) for x in scales_values(points)])
+        # print(scales_values(points, self.view_point))
+            
+        return  [assign_color(x) for x in scales_values(mid_points, min_val, max_val)]
